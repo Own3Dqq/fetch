@@ -1,4 +1,5 @@
 @import './__loader'
+@import './__details'
 
 *
     margin: 0
@@ -11,15 +12,28 @@ body
     font-size: 16px
 
 button
+    border: none
+    background: none
     cursor: pointer
+
+.button__add
+    height: 30px
+    width: 100%
+    border: none
+    border-radius: 4px
+    background: #47b403
+    color: #fff
+    font-size: 12px
+    font-weight: bold
+    text-transform: uppercase
+    cursor: pointer
+    &:hover
+        transition: .02s
+        background: #47b403c3
 
 .container
     width: 1240px
     margin: 0 auto
-
-.header
-    height: 34px
-    background: #c3c3c3
 
 .basket
     height: 34px
@@ -27,7 +41,14 @@ button
     align-items: center
     justify-content: flex-end
 
+.header
+    height: 34px
+    background: #c3c3c3
+    margin-bottom: 20px
+    z-index: 9999
+
 .card
+    // display: none
     background: #e6e6e6
     &__list
         position: relative
@@ -105,7 +126,16 @@ button
         box-shadow: 0px 1px 1px 2px rgb(0 0 0 / 15%)
         color: #fff
         cursor: pointer
+/* sidebar */
 
 .loaded
     transition: all 0.7s ease
     transform: rotateZ(180deg)
+
+.show
+    display: block
+    visibility: visible
+
+.hidden
+    // display: none
+    visibility: hidden

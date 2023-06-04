@@ -25,16 +25,17 @@
         </div>
 
         <header class="header" id="header">
-            <div class="container">
+            <div class="header__container container">
                 <div class="basket">
                     Корзина: <span class="basket__count">0</span>
                 </div>
             </div>
         </header>
 
-        <main>
+        <main class="main" id="main">
             <div class="card">
                 <div class="card__list"></div>
+                <div class="card__details show"></div>
                 <div class="card__more">
                     <button class="card__reload">
                         <svg
@@ -51,5 +52,9 @@
                 </div>
             </div>
         </main>
+
+        <aside class="sidebar hidden">
+            <div class="sidebar__info"></div>
+        </aside>
     </body>
 </html>

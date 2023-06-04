@@ -1,0 +1,79 @@
+/* Sidebar Product */
+.sidebar
+    position: fixed
+    top: 0
+    right: 0
+    border-radius: 4px
+    width: 400px
+    padding: 10px
+    z-index: 999
+
+.info__item
+    position: relative
+    display: flex
+    flex-direction: column
+    border-radius: 4px
+    background: #fff
+    width: 100%
+    height: calc( 100vh - 40px )
+    padding: 20px 20px 20px 20px
+    box-shadow: 0px 0px 10px 2px rgb(0 0 0 / 35%)
+
+    &__close
+        position: absolute
+        font-size: 18px
+        top: 10px
+        right: 10px
+        width: 25px
+        height: 25px
+        border: none
+        background: transparent
+
+    &__id
+        display: flex
+        justify-content: flex-end
+        align-items: center
+        height: 30px
+    &__title
+        display: flex
+        align-items: center
+        padding: 8px 0
+    &__image
+        position: relative
+        img
+            width: 100%
+            min-height: 250px
+            height: 100%
+            max-height: 260px
+    &__commment
+        display: flex
+        justify-content: space-between
+        align-items: center
+        padding: 10px 0
+    &__characteristics
+        display: flex
+
+        button
+            font-size: 13px
+            font-weight: bold
+            display: block
+            border-bottom: 2px solid transparent
+            padding: 10px 10px
+            margin-right: 10px
+            background: #fff
+            box-shadow: 0 0 0 0 rgba(0, 0, 0,0.2 )
+            &:nth-child(1)
+                border-bottom: 2px solid #47b403
+
+            &:hover
+                border-bottom: 2px solid #47b403
+    &__about
+        overflow-y: scroll
+        overflow-x: hidden
+        white-space: wrap
+        padding: 15px 8px
+        margin-bottom: 10px
+
+    &__price
+        display: flex
+        font-size: 26px

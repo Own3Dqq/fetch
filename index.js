@@ -3,72 +3,17 @@ const btnReload = document.querySelector('.card__reload');
 const cardList = document.querySelector('.card__list');
 const loader = document.querySelector('.loader');
 const sidebarInfo = document.querySelector('.sidebar');
-const templateProductInfo = `
-        <div class="info__item">
-        <button class="info__item__close">X</button>
-            <div class="info__item__category">
-                <span>Clothes</span>
-            </div>
-            <div class="info__item__title">
-                <p>Монітор 31.5" Samsung LU32J590UQIXCI -- 4K UHD VA</p>
-            </div>
-            <div class="info__item__image">
-                <img
-                    src="https://plus.unsplash.com/premium_photo-1664701475272-953393050754?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80"
-                    alt=""
-                />
-            </div>
-
-            <div class="info__item__commment">
-                <div>
-                    <span>&#9733;&#9733;&#9733;&#9733;&#9734;</span>
-                    <span>10 відгуків</span>
-                </div>
-
-                <div class="info__item__id">Код товара: 2220002</div>
-            </div>
-
-            <div class="info__item__price">
-                <span class="info__item__price-current"> 890 ₴</span>
-            </div>
-            <div class="info__item__characteristics">
-                <button>About</button>
-                <button>Characteristics</button>
-                <button>Reviews</button>
-            </div>
-            <div class="info__item__about">
-                <h4>Мультимедійні можливості</h4>
-                <br />
-                <ul>
-                    <li>
-                        FreeSync: технологія Freesync дає нагоду
-                        позбутися від розривів зображення під час
-                        динамічної зміни кадрів
-                    </li>
-                    <li>
-                        Режим Game Mode: ігровий режим Game Mode миттєво
-                        оптимізує настройки кольору та контрастності
-                        залежно від гри для максимального задоволення
-                        від ігрового процесу
-                    </li>
-                </ul>
-            </div>
-            <div class="info__item__buttons">
-                <button class="button__add">Add to basket</button>
-            </div>
-        </div>
-`;
 
 function createProductTemplate(key, value) {
     const template = `
-    <div class="card__item" id="card__${key}">
+    <div class="card__item" data-id="${value.id}"">
         <div class="card__image">
             <img src="${value.images[0]}" alt="card photo" />
         </div>
         <div class="card__info">
             <div class="card__comment">
                 <span>&#9733;&#9733;&#9733;&#9733;&#9734;</span>
-                <span><a href="#">${value.id} відгуків</a></span>
+                <span><a href="#">${value.id} reviews</a></span>
             </div>
             <div class="card__title">
                 <p>
@@ -90,7 +35,56 @@ function createProductTemplate(key, value) {
     return template;
 }
 
-async function getProductData(value = 10) {
+function createProductInformation(product) {
+    const templateProductInfo = `
+        <div class="info__item" data-id = ${product.id}>
+        <!-- <button class="info__item__close">X</button> -->
+            <div class="info__item__category">
+                <span>${product.category.name}</span>
+            </div>
+            <div class="info__item__title">
+                <h3>${product.title}</h3>
+            </div>
+            <div class="info__item__image">
+
+                <img
+                    src="${product.images[0]}"
+                    alt=""
+                />
+            </div>
+
+            <div class="info__item__commment">
+                <div>
+                    <span>&#9733;&#9733;&#9733;&#9733;&#9734;</span>
+                    <span>${product.id} ratings</span>
+                </div>
+
+                <div class="info__item__id">Код товара: 2220${product.id}</div>
+            </div>
+
+            <div class="info__item__price">
+                <span class="info__item__price-current">${product.price} ₴</span>
+            </div>
+            <div class="info__item__characteristics">
+                <button>About</button>
+                <button>Characteristics</button>
+                <button>Reviews</button>
+            </div>
+            <div class="info__item__about">
+                <p>
+                    ${product.description}
+                </p>
+            </div>
+            <div class="info__item__buttons">
+                <button class="button__add">Add to basket</button>
+            </div>
+        </div>
+    `;
+
+    return templateProductInfo;
+}
+
+async function getProductData(value = 0) {
     let data = null;
 
     try {
@@ -108,6 +102,25 @@ async function getProductData(value = 10) {
     }
 }
 
+async function getCurrentProduct(id) {
+    let selectedProduct = null;
+
+    try {
+        let responce = await fetch(
+            `https://api.escuelajs.co/api/v1/products/${id}`
+        );
+
+        if (responce.status != 200) {
+            throw new Error(selectedProduct.message);
+        }
+
+        selectedProduct = await responce.json();
+        return selectedProduct;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 function renderProductCard(product) {
     if (product) {
         for (let [key, value] of product.entries()) {
@@ -118,11 +131,32 @@ function renderProductCard(product) {
         }
 
         Array.from(cardList.children).forEach((element) => {
-            element.addEventListener('click', (event) => {
+            element.addEventListener('click', async (event) => {
+                const { currentTarget } = event;
+
+                const currentProduct = await getCurrentProduct(
+                    currentTarget.dataset.id
+                );
+
                 if (sidebarInfo.classList.contains('hidden')) {
+                    sidebarInfo.innerHTML = '';
+                    sidebarInfo.insertAdjacentHTML(
+                        'beforeend',
+                        createProductInformation(currentProduct)
+                    );
                     sidebarInfo.classList.remove('hidden');
-                } else {
+                } else if (
+                    sidebarInfo.firstElementChild.dataset.id ===
+                    currentTarget.dataset.id
+                ) {
+                    console.log(this);
                     sidebarInfo.classList.add('hidden');
+                } else {
+                    sidebarInfo.innerHTML = '';
+                    sidebarInfo.insertAdjacentHTML(
+                        'beforeend',
+                        createProductInformation(currentProduct)
+                    );
                 }
             });
         });

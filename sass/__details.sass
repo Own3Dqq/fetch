@@ -1,34 +1,51 @@
 /* Sidebar Product */
 .sidebar
     position: fixed
-    top: 0
-    right: 0
+    top: 15px
+    right: 10px
     border-radius: 4px
+    background: #fff
     width: 400px
-    padding: 10px
-    z-index: 999
+    height: calc( 100vh - 40px )
+    padding: 20px
+    box-shadow: 0px 0px 10px 2px rgb(0 0 0 / 35%)
+    overflow-y: scroll
+    overflow-x: hidden
+    z-index: 800
+    &::-webkit-scrollbar
+        width: 2px
+    &::-webkit-scrollbar-track
+        background: #f1f1f1
+    &::-webkit-scrollbar-thumb
+        background: #888
+    &::-webkit-scrollbar-thumb:hover
+        background: #555
+
+    &__close
+        position: absolute
+        top: 10px
+        right: 10px
+        width: 25px
+        height: 25px
+        border: none
+        background: transparent
+        display: flex
+        align-items: center
+        justify-content: center
+        cursor: pointer
+        z-index: 1050
+        button
+            font-size: 30px
+    &__info
+        height: 100%
 
 .info__item
     position: relative
     display: flex
     flex-direction: column
-    border-radius: 4px
-    background: #fff
+    justify-content: space-between
     width: 100%
-    height: calc( 100vh - 40px )
-    padding: 20px 20px 20px 20px
-    box-shadow: 0px 0px 10px 2px rgb(0 0 0 / 35%)
-
-    // &__close
-    //     position: absolute
-    //     font-size: 18px
-    //     top: 10px
-    //     right: 10px
-    //     width: 25px
-    //     height: 25px
-    //     border: none
-    //     background: transparent
-
+    height: 100%
     &__id
         display: flex
         justify-content: flex-end
@@ -45,6 +62,7 @@
             min-height: 250px
             height: 100%
             max-height: 260px
+            object-fit: fill
     &__commment
         display: flex
         justify-content: space-between
@@ -63,17 +81,28 @@
             box-shadow: 0 0 0 0 rgba(0, 0, 0,0.2 )
             &:nth-child(1)
                 border-bottom: 2px solid #47b403
-
             &:hover
                 border-bottom: 2px solid #47b403
     &__about
         overflow-y: scroll
         overflow-x: hidden
+        cursor: pointer
         white-space: wrap
         padding: 15px 8px
-        height: 25%
+        height: auto
         margin-bottom: 10px
+        z-index: 890
+        &::-webkit-scrollbar
+            width: 4px
+        &::-webkit-scrollbar-track
+            background: #f1f1f1
+        &::-webkit-scrollbar-thumb
+            background: #888
+        &::-webkit-scrollbar-thumb:hover
+            background: #555
 
     &__price
         display: flex
-        font-size: 26px
+        height: 45px
+        font-size: 30px
+        color: red

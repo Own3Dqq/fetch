@@ -32,8 +32,8 @@ button
         background: #47b403c3
 
 .container
-    width: 1240px
     margin: 0 auto
+    padding: 0 20px
 
 .basket
     height: 34px
@@ -42,13 +42,13 @@ button
     justify-content: flex-end
 
 .header
-    height: 34px
-    background: #c3c3c3
-    margin-bottom: 20px
-    z-index: 9999
+    position: relative
+    height: 35px
+    width: 100%
+    background: #fff
+    box-shadow: 0px 0px 15px 2px rgba(0,0,0,.15)
 
 .card
-    // display: none
     background: #e6e6e6
     &__list
         position: relative
@@ -76,6 +76,7 @@ button
         height: 150px
         background: #c3c3c3
         img
+            object-fit: cover
             width: 100%
             height: 100%
 
@@ -136,6 +137,6 @@ button
     display: block
     visibility: visible
 
-.hidden
-    // display: none
+.hide
+    display: none
     visibility: hidden

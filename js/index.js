@@ -1,45 +1,59 @@
 let count = 0;
 const LIMIT_PAGE_ITEM = 10;
 
-const cardList = document.querySelector('.card__list');
-const btnReload = document.querySelector('.card__reload');
-const sidebar = document.querySelector('.sidebar');
-const sidebarCloseBtn = document.querySelector('.btn__close');
-const sidebarInfo = document.querySelector('.sidebar__info');
+function init() {
+    const cardList = document.querySelector('.card__list');
+    const btnReload = document.querySelector('.card__reload');
+    const sidebar = document.querySelector('.sidebar');
+    const sidebarCloseBtn = document.querySelector('.btn__close');
+    const sidebarInfo = document.querySelector('.sidebar__info');
 
-function createProductTemplate(key, value) {
-    const template = `
-        <div class="card__item" data-id="${value.id}"">
+    const showLoader = () => {
+        const loader = document.querySelector('.loader');
+
+        if (loader.classList.contains('hide')) {
+            loader.classList.remove('hide');
+            loader.classList.add('show');
+        }
+    };
+
+    const hideLoader = () => {
+        const loader = document.querySelector('.loader');
+
+        if (loader.classList.contains('show')) {
+            loader.classList.remove('show');
+            loader.classList.add('hide');
+        }
+    };
+
+    const templateProductCard = (product) => {
+        const template = `
+        <div class="card__item" data-id="${product.id}"">
             <div class="card__image">
-                <img src="${value.images ? value.images[0] : './img/no-image.png'}" alt="card photo" />
+                <img src='${product.images[0]}' />
             </div>
             <div class="card__info">
                 <div class="card__comment">
                     <span>&#9733;&#9733;&#9733;&#9733;&#9734;</span>
-                    <span><a href="#">${value.id} reviews</a></span>
+                    <span><a href="#">${product.id} reviews</a></span>
                 </div>
                 <div class="card__title">
                     <p>
-                        ${value.title}
+                        ${product.title}
                     </p>
                 </div>
                 <div class="card__price">
-                    <span class="card__price__current-price"> ${value.price} ₴</span
+                    <span class="card__price__current-price"> ${product.price} ₴</span
                     >
-                </div>
-                <div class="card__button">
-                    <button class="card__button__add button__add">
-                        Add to basket
-                    </button>
                 </div>
              </div>
         </div>`;
 
-    return template;
-}
+        return template;
+    };
 
-function createProductInformation(product) {
-    const templateProductInfo = `
+    const templateProductInformation = (product) => {
+        const templateProductInfo = `
             <div class="info__item" data-id = ${product.id}>
                 <div class="info__item__category">
                     <span>${product.category.name}</span>
@@ -83,103 +97,108 @@ function createProductInformation(product) {
             </div>
         `;
 
-    return templateProductInfo;
-}
+        return templateProductInfo;
+    };
 
-async function getProductData(offset, limit) {
-    let data = null;
+    const getProductData = async (offset = 0, limit) => {
+        let data = null;
 
-    try {
-        let responce = await fetch(`https://api.escuelajs.co/api/v1/products?offset=${offset}&limit=${limit}`);
-        data = await responce.json();
+        try {
+            let responce = await fetch(`https://api.escuelajs.co/api/v1/products?offset=${offset}&limit=${limit}`);
+            data = await responce.json();
 
-        if (responce.status != 200) {
-            throw new Error(data.message);
-        }
-
-        return data;
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-async function getCurrentProduct(id) {
-    let selectedProduct = null;
-
-    try {
-        let responce = await fetch(`https://api.escuelajs.co/api/v1/products/${id}`);
-
-        if (responce.status != 200) {
-            throw new Error(selectedProduct.message);
-        }
-
-        selectedProduct = await responce.json();
-        return selectedProduct;
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-function renderProductCard(product) {
-    if (product) {
-        for (let [key, value] of product.entries()) {
-            cardList.insertAdjacentHTML('beforeend', createProductTemplate(key, value));
-        }
-        showModalWindow();
-    }
-}
-
-function showModalWindow() {
-    const listElements = Array.from(cardList.children);
-
-    listElements.forEach((element) => {
-        element.addEventListener('click', async (event) => {
-            const { currentTarget } = event;
-            const currentProduct = await getCurrentProduct(currentTarget.dataset.id);
-
-            function showModal() {
-                sidebarInfo.innerHTML = '';
-                sidebarInfo.insertAdjacentHTML('beforeend', createProductInformation(currentProduct));
-                if (sidebar.classList.contains('hide')) {
-                    sidebar.classList.remove('hide');
-                }
+            if (responce.status != 200) {
+                throw new Error(data.message);
             }
 
-            showModal();
+            return data;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const getTargetProductById = async (id) => {
+        let selectedProduct = null;
+
+        try {
+            let responce = await fetch(`https://api.escuelajs.co/api/v1/products/${id}`);
+
+            if (responce.status != 200) {
+                throw new Error(selectedProduct.message);
+            }
+
+            selectedProduct = await responce.json();
+            return selectedProduct;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const closeProductInformation = (event) => {
+        if (!sidebar.classList.contains('hide')) {
+            sidebar.classList.add('hide');
+            sidebarInfo.innerHTML = '';
+        }
+    };
+
+    const openProductInformation = () => {
+        if (sidebar.classList.contains('hide')) {
+            sidebar.classList.remove('hide');
+        }
+    };
+
+    const renderProductCard = (product) => {
+        for (let [key, value] of product.entries()) {
+            cardList.insertAdjacentHTML('beforeend', createProductCard(value));
+        }
+        const items = [...cardList.children];
+
+        items.forEach((element) => {
+            element.addEventListener('click', async (event) => {
+                const { currentTarget } = event;
+
+                const currentProduct = await getTargetProductById(currentTarget.dataset.id);
+
+                renderProductInformation(currentProduct);
+            });
         });
+    };
+
+    const renderProductInformation = (product) => {
+        sidebarInfo.innerHTML = '';
+        sidebarInfo.insertAdjacentHTML('beforeend', createProductInformation(product));
+        openProductInformation();
+    };
+
+    const createProductCard = (product) => {
+        return templateProductCard(product);
+    };
+
+    const createProductInformation = (product) => {
+        return templateProductInformation(product);
+    };
+
+    sidebarCloseBtn.addEventListener('click', closeProductInformation);
+
+    btnReload.addEventListener('click', async (event) => {
+        event.preventDefault();
+
+        showLoader();
+        let product = await getProductData((count += 10), LIMIT_PAGE_ITEM);
+
+        renderProductCard(product);
+        hideLoader();
+    });
+
+    document.addEventListener('click', (event) => {
+        const { target } = event;
+        !sidebar.contains(target) ? closeProductInformation() : undefined;
+    });
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        renderProductCard(await getProductData(count, LIMIT_PAGE_ITEM));
+        hideLoader();
     });
 }
 
-function closeModalWindow() {
-    sidebar.classList.add('hide');
-    sidebar.classList.remove('show');
-}
-
-sidebarCloseBtn.addEventListener('click', (event) => {
-    if (!sidebar.classList.contains('hide')) {
-        sidebar.classList.add('hide');
-        sidebarInfo.innerHTML = '';
-    }
-});
-
-btnReload.addEventListener('click', async (event) => {
-    event.preventDefault();
-
-    count += 10;
-
-    let product = await getProductData(count, LIMIT_PAGE_ITEM);
-    console.log(product);
-
-    renderProductCard(product);
-});
-
-document.addEventListener('click', (event) => {
-    event.target !== sidebar ? closeModalWindow() : undefined;
-});
-
-document.addEventListener('DOMContentLoaded', async () => {
-    const loader = document.querySelector('.loader');
-    let product = await getProductData(0, LIMIT_PAGE_ITEM);
-    renderProductCard(product);
-    loader.classList.add('hide');
-});
+init();

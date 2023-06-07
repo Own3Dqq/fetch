@@ -11,7 +11,7 @@ function createProductTemplate(key, value) {
     const template = `
         <div class="card__item" data-id="${value.id}"">
             <div class="card__image">
-                <img src="${value.images ? value.images[0] : '/img/no-image.png'}" alt="card photo" />
+                <img src="${value.images ? value.images[0] : './img/no-image.png'}" alt="card photo" />
             </div>
             <div class="card__info">
                 <div class="card__comment">
@@ -97,7 +97,6 @@ async function getProductData(offset, limit) {
             throw new Error(data.message);
         }
 
-        console.log(data);
         return data;
     } catch (error) {
         console.log(error);
@@ -180,7 +179,7 @@ document.addEventListener('click', (event) => {
 
 document.addEventListener('DOMContentLoaded', async () => {
     const loader = document.querySelector('.loader');
-    loader.classList.add('hide');
     let product = await getProductData(0, LIMIT_PAGE_ITEM);
     renderProductCard(product);
+    loader.classList.add('hide');
 });

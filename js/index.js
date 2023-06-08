@@ -1,5 +1,21 @@
 let count = 0;
+const API_URL = 'https://api.escuelajs.co/api/v1/products';
 const LIMIT_PAGE_ITEM = 10;
+
+const testImageUrl = (event) => {
+    const parentElem = event.target.parentElement;
+    const testerUrl = event.target.getAttribute('data-src');
+    const tester = new Image();
+
+    tester.onload = () => {
+        parentElem.innerHTML = `<img src="${testerUrl}" />`;
+    };
+    tester.onerror = () => {
+        parentElem.innerHTML = `<img src="/img/no-image.png" />`;
+    };
+
+    tester.src = testerUrl;
+};
 
 function init() {
     const cardList = document.querySelector('.card__list');
@@ -30,7 +46,10 @@ function init() {
         const template = `
         <div class="card__item" data-id="${product.id}"">
             <div class="card__image">
-                <img src='${product.images[0]}' />
+                <img 
+                    src="/img/Loading_icon.gif"
+                    data-src="${product.images[0]}"
+                    onload="testImageUrl(event)" />
             </div>
             <div class="card__info">
                 <div class="card__comment">
@@ -100,14 +119,14 @@ function init() {
         return templateProductInfo;
     };
 
-    const getProductData = async (offset = 0, limit) => {
+    const getProductsData = async (offset = 0, limit) => {
         let data = null;
 
         try {
-            let responce = await fetch(`https://api.escuelajs.co/api/v1/products?offset=${offset}&limit=${limit}`);
+            let responce = await fetch(`${API_URL}?offset=${offset}&limit=${limit}`);
             data = await responce.json();
 
-            if (responce.status != 200) {
+            if (responce.status !== 200) {
                 throw new Error(data.message);
             }
 
@@ -121,9 +140,9 @@ function init() {
         let selectedProduct = null;
 
         try {
-            let responce = await fetch(`https://api.escuelajs.co/api/v1/products/${id}`);
+            let responce = await fetch(`${API_URL}/${id}`);
 
-            if (responce.status != 200) {
+            if (responce.status !== 200) {
                 throw new Error(selectedProduct.message);
             }
 
@@ -184,7 +203,7 @@ function init() {
         event.preventDefault();
 
         showLoader();
-        let product = await getProductData((count += 10), LIMIT_PAGE_ITEM);
+        let product = await getProductsData((count += 10), LIMIT_PAGE_ITEM);
 
         renderProductCard(product);
         hideLoader();
@@ -196,7 +215,7 @@ function init() {
     });
 
     document.addEventListener('DOMContentLoaded', async () => {
-        renderProductCard(await getProductData(count, LIMIT_PAGE_ITEM));
+        renderProductCard(await getProductsData(count, LIMIT_PAGE_ITEM));
         hideLoader();
     });
 }

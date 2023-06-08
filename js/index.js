@@ -1,6 +1,19 @@
 let count = 0;
 const API_URL = 'https://api.escuelajs.co/api/v1/products';
 const LIMIT_PAGE_ITEM = 10;
+const testImageUrl = (event)  => {
+    const parentElem = event.target.parentElement;
+    const testerUrl = event.target.getAttribute('data-src');
+    const tester = new Image();
+
+    tester.onload = () => {
+        parentElem.innerHTML = `<img src="${testerUrl}"/>`;
+    };
+    tester.onerror = () => {
+        parentElem.innerHTML = `<img src="/img/no-image.png"/>`;
+    };
+    tester.src = testerUrl;
+}
 
 function init() {
     const cardList = document.querySelector('.card__list');
@@ -31,7 +44,12 @@ function init() {
         const template = `
         <div class="card__item" data-id="${product.id}"">
             <div class="card__image">
-                <img src='${product.images[0]}' />
+                <img
+                    src="/img/Loading_icon.gif"
+                    data-src="${product.images[0]}"
+                    onLoad="testImageUrl(event)"
+                    style="object-fit: cover"
+                />
             </div>
             <div class="card__info">
                 <div class="card__comment">

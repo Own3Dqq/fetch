@@ -1,7 +1,7 @@
 let count = 0;
 const API_URL = 'https://api.escuelajs.co/api/v1/products';
 const LIMIT_PAGE_ITEM = 10;
-const testImageUrl = (event)  => {
+const testImageUrl = (event) => {
     const parentElem = event.target.parentElement;
     const testerUrl = event.target.getAttribute('data-src');
     const tester = new Image();
@@ -13,7 +13,7 @@ const testImageUrl = (event)  => {
         parentElem.innerHTML = `<img src="/img/no-image.png"/>`;
     };
     tester.src = testerUrl;
-}
+};
 
 function init() {
     const cardList = document.querySelector('.card__list');

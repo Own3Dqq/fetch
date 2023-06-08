@@ -46,10 +46,12 @@ function init() {
         const template = `
         <div class="card__item" data-id="${product.id}"">
             <div class="card__image">
-                <img 
-                    src="/img/Loading_icon.gif"
-                    data-src="${product.images[0]}"
-                    onload="testImageUrl(event)" />
+            <img
+            src="/img/Loading_icon.gif"
+            data-src="${product.images[0]}"
+            onLoad="testImageUrl(event)"
+            style="object-fit: cover"
+        />
             </div>
             <div class="card__info">
                 <div class="card__comment">
@@ -153,7 +155,7 @@ function init() {
         }
     };
 
-    const closeProductInformation = (event) => {
+    const closeProductInformation = () => {
         if (!sidebar.classList.contains('hide')) {
             sidebar.classList.add('hide');
             sidebarInfo.innerHTML = '';
